@@ -1,0 +1,175 @@
+
+
+<div class="centered_container vPadding" style="top:50px;" >
+  <h1>List of Saved Items</h1>
+</div>
+
+<div class="centered_container div_border" style="top:50px;" >
+  <h3 style="float:left; margin-left:20px;">Enter a new item</h3>
+<form>
+  <input id="posItem" type="text" maxlength="20" name="item" style="vertical-align:middle;" required>  Item</input>
+  <input id="posNum" type="number" maxlength="10" name="quantity" style="vertical-align:middle;" required>  Quantity</input><br/>
+</form>
+  <button id ="posBtn">Add</button>
+  <button id ="refreshBtn">Refresh</button>
+  <button id ="clrBtn">ClearList</button>
+</div>
+<div class="centered_container" style="top:50px;" >
+  <button id ="submitBtn">Send List to Fridge</button>
+</div>
+
+<div class="centered_container div_border vMargin">
+  <h3>Grocery List</h3>
+
+  <table id="itemTable" float="right" margin-right="10%" style ="width:80%">
+
+  </table>
+</div>
+
+  <script type="text/javascript">
+
+  //Send input to Table for holding until groccery list item's are confirmed
+  $(document).ready(function(){$('#posBtn').click(function(event) {
+    console.log("Adding item to PossTable");
+        // get the form data
+        var PossibleItem =  {
+        'item'              : $('input[name=item]').val().toLowerCase(),
+        'quantity'          : $('input[name=quantity]').val(),
+        };
+
+        if($.isNumeric(PossibleItem.quantity)){
+          console.log("a number was detected");
+
+
+          // process the form
+          $.ajax({
+              url         : 'http://127.0.0.1:8080/ajxlistSnd',
+              type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+              data        : PossibleItem, // our data object
+              dataType    : 'json' // what type of data do we expect back from the server
+          })
+              // using the done promise callback
+              .done(function(data) {
+
+                console.log("Success: List updated: "+ data);
+                alert("item uploaded");
+
+              });//End .Done()
+        }else{alert("The input quantity was not a number");
+            console.log("The input quantity was not a number");
+            $('#posNum').val() = ""; }
+
+
+    });//End of function
+});//End of document.ready
+
+//Submit PosTable to Fridge table (have bought grocceries and they're now in the fridge)
+$(document).ready(function(){$('#submitBtn').click(function(event) {
+  console.log("Adding item to Fridge");
+      // get the form data
+
+      var PossibleItem =  {
+      'item'              : $('input[name=item]').val(),
+      'quantity'          : $('input[name=quantity]').val(),
+      };
+
+      // process the form
+      $.ajax({
+          url         : 'http://127.0.0.1:8080/ajxlistSub',
+          type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+          data        : PossibleItem, // our data object
+          dataType    : 'json' // what type of data do we expect back from the server
+      })
+          // using the done promise callback
+          .done(function(data) {
+
+            console.log("Success: List updated: "+ data);
+            alert("item uploaded");
+
+          });//End .Done()
+  });
+});//End of document.ready
+
+//Retreive Values from DB and populate the table
+$(document).ready(function(){$("#refreshBtn").click(function getRegItemTbl(){
+      // process the form
+      $('#itemTable').empty();
+
+      $.ajax({
+          url         : 'http://127.0.0.1:8080/ajxlistRtn',
+          type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+          dataType    : 'json' // what type of data do we expect back from the server
+      })
+      // using the done promise callback
+          .done(function(data) {
+            console.log("This is the data: "+ data[0].Name);
+            if(data[0].Name!==null){
+              $(function () {
+              $.each(data, function (i, item) {
+                  $('<tr>').append(
+                  $('<td>').text(item.Name),
+                  $('<td>').text(item.Quantity)).appendTo('#itemTable');
+              console.log("item returned");
+              });
+
+              // log data to the console
+              console.log("return data from Ajx: "+data[0].Name);
+              });//End of Function
+            }else console.log("no data returned from Ajx");
+
+          });//End .Done()
+    })//End of function
+});//End of document.ready
+
+//Clear the possTable and List
+$(document).ready(function(){$("#clrBtn").click(function getRegItemTbl(){
+      // process the form
+
+      $.ajax({
+          url         : 'http://127.0.0.1:8080/ajxlistClr',
+          type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+          dataType    : 'json' // what type of data do we expect back from the server
+      })
+      // using the done promise callback
+          .done(function(data) {
+            // log data to the console
+            console.log("List Cleared Successfully");
+            alert("refreshed successfully!");
+      });//End .Done()
+
+    })//End of function
+});//End of Document Ready
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- . -->

@@ -1,0 +1,157 @@
+
+
+
+ <!--                                         Add a new Item Type                               -->
+
+  <h3>Add another item</h3>
+  <form name="item_input" action="http://127.0.0.1:8080/" method="post" accept-charset="utf-8">
+    <fieldset>
+      <legend>Add another item</legend>
+      <ul style="list-style-type:none">
+          <li><label class="field" for="item">Item</label><input type="text" maxlength="20" name="item" class="textbox_300" placeholder="Please enter the typical price" required></li>
+          <li><label class="field" for="price">Price</label><input type="number" maxlength="10" name="price" class="textbox_300" placeholder="Please enter the typical price" required></li>
+          <li><label class="field" for="Category">Category</label><input type="text" maxlength="20" name="category" class="textbox_300" placeholder="Please enter the Category of the item" required></li>
+          <li><input type="submit" value="send" id="submit"></li>
+      </ul>
+    </fieldset>
+  </form>
+
+  <button id="PopTbl">Refresh</button>
+  <button id="ClrTbl">Clear Items</button>
+
+  <h2>List of Saved Items</h2>
+<table align="center" style ="width:80%" id="table1">
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Category</th>
+    </tr>
+</table>
+
+<table id="itemTable1" align="center" style ="width:80%">
+</table>
+
+
+  <script type="text/javascript">
+
+
+//Populates table when 'Refresh' button clicked
+  $(document).ready(function(){$("#PopTbl").click(function getRegItemTbl(){
+        //Clear the current results
+        $('#itemTable1').empty();
+
+        // process the form
+
+        $.ajax({
+            url         : 'http://127.0.0.1:8080/ajxRegRtn',
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            dataType    : 'json' // what type of data do we expect back from the server
+        })
+        // using the done promise callback
+            .done(function(data) {
+              var parsedata = data;
+
+              console.log("This is the parsedata: "+ parsedata);
+
+              $(function () {
+              $.each(parsedata, function (i, item) {
+                  $('<tr>').append(
+                  $('<td>').text(item.Name),
+                  $('<td>').text(item.Price),
+                  $('<td>').text(item.Category)).appendTo('#itemTable1');
+                  });
+              });
+
+              // log data to the console
+              console.log("return data from Ajx: "+data);
+
+            });//End .Done()
+
+    })//End of function
+}); //End of document.ready
+
+
+
+  //Processes form and sends to DB
+  $(document).ready(function(){$('form').submit(function(event) {
+
+      // stop the form from submitting the normal way and refreshing the page
+      event.preventDefault();
+      var url = "http://127.0.0.1:8080/ajxItms"
+        // get the form data
+        // there are many ways to get this data using jQuery (you can use the class or id also)
+        var formData = {
+            'item'              : $('input[name=item]').val().toLowerCase(),
+            'price'             : $('input[name=price]').val(),
+            'category'    : $('input[name=category]').val().toLowerCase()
+        };
+
+        // process the form
+        $.ajax({
+            url         : 'http://127.0.0.1:8080/ajxItms',
+            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            data        : formData, // our data object
+            dataType    : 'json' // what type of data do we expect back from the server
+        })
+            // using the done promise callback
+            .done(function(data) {
+
+              getRegItemTbl();
+              console.log("This is the parsedata: "+ parsedata);
+
+              // log data to the console
+              console.log("return data from Ajx: "+data);
+
+            });//End .Done()
+    });
+});//End of document.ready
+
+    //Drop Item, Price, Categories and Quantity and regenerate them
+  $(document).ready(function(){$("#ClrTbl").click(function getRegItemTbl(){
+          // process the form
+
+          $.ajax({
+              url         : 'http://127.0.0.1:8080/ajxclrItems',
+              type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+              dataType    : 'json' // what type of data do we expect back from the server
+          })
+          // using the done promise callback
+            .done(function(data) {
+               console.log("Table's are cleared, this is the response: "+data);
+
+             });//End .Done()
+
+        })//End of function
+    }); //End of document.ready
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- . -->

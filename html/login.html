@@ -1,0 +1,83 @@
+
+
+  <script type="text/javascript">
+
+  function checkForm(form)
+  {
+    if(form.username.value == "") {
+      alert("Error: Username cannot be blank!");
+      form.username.focus();
+      return false;
+    }
+    re = /^\w+$/;
+    if(!re.test(form.username.value)) {
+      alert("Error: Username must contain only letters, numbers and underscores!");
+      form.username.focus();
+      return false;
+    }
+
+    function checkPassword(str)
+ {
+   // at least one number, one lowercase and one uppercase letter
+   // at least six characters
+   var re = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+   return re.test(str);
+ }
+
+    alert("You entered a valid password: " + form.pwd1.value);
+    return true;
+  }
+
+</script>
+
+<!-- The .js validation code and form below roughly sourced from: http://www.the-art-of-web.com/javascript/validate-password/  -->
+
+<!-- onsubmit="return checkForm(this);" -->
+<form name="loginSubmit" action="http://127.0.0.1:8080/loginSubmit" method="POST" accept-charset="utf-8" >
+<p>Username: <input type="text" name="username"></p>
+<p>Password: <input type="password" name="pwd"></p>
+<p><input type="submit"></p>
+</form>
+
+
+  <!-- <section class="loginform cf">
+  <form name="login" action="http://127.0.0.1:8080/loginSubmit" method="post" target="blank" autocomplete="false" accept-charset="utf-8">
+      <ul>
+          <li><label for="usermail">Email</label>
+          <input type="email" name="usermail" placeholder="yourname@email.com" required></li>
+          <li><label for="password">Password</label>
+          <input type="password" name="password" placeholder="password" required></li>
+
+          <input type="submit" value="Login">
+      </ul>
+  </form>
+  </section> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- . -->
